@@ -9,9 +9,19 @@ use InvalidArgumentException;
 final class CreateMemberRequestDto
 {
     public function __construct(
-        public readonly string $fullName,
-        public readonly string $email,
+        private readonly string $fullName,
+        private readonly string $email,
     ) {}
+
+    public function getFullName(): string
+    {
+        return $this->fullName;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
 
     public static function fromArray(array $payload): self
     {

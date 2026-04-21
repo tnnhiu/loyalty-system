@@ -7,16 +7,61 @@ namespace App\DTO\Response;
 final class PointHistoryItemDto
 {
     public function __construct(
-        public readonly int $pointId,
-        public readonly int $pointAmount,
-        public readonly ?string $description,
-        public readonly ?int $transactionId,
-        public readonly ?string $transactionAmount,
-        public readonly ?int $redemptionId,
-        public readonly ?int $giftId,
-        public readonly ?string $giftName,
-        public readonly string $createdAt,
+        private readonly int $pointId,
+        private readonly int $pointAmount,
+        private readonly ?string $description,
+        private readonly ?int $transactionId,
+        private readonly ?string $transactionAmount,
+        private readonly ?int $redemptionId,
+        private readonly ?int $giftId,
+        private readonly ?string $giftName,
+        private readonly string $createdAt,
     ) {}
+
+    public function getPointId(): int
+    {
+        return $this->pointId;
+    }
+
+    public function getPointAmount(): int
+    {
+        return $this->pointAmount;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getTransactionId(): ?int
+    {
+        return $this->transactionId;
+    }
+
+    public function getTransactionAmount(): ?string
+    {
+        return $this->transactionAmount;
+    }
+
+    public function getRedemptionId(): ?int
+    {
+        return $this->redemptionId;
+    }
+
+    public function getGiftId(): ?int
+    {
+        return $this->giftId;
+    }
+
+    public function getGiftName(): ?string
+    {
+        return $this->giftName;
+    }
+
+    public function getCreatedAt(): string
+    {
+        return $this->createdAt;
+    }
 
     public function toArray(): array
     {

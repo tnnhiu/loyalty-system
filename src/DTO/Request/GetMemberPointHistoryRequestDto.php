@@ -9,8 +9,13 @@ use InvalidArgumentException;
 final class GetMemberPointHistoryRequestDto
 {
     public function __construct(
-        public readonly int $memberId,
+        private readonly int $memberId,
     ) {}
+
+    public function getMemberId(): int
+    {
+        return $this->memberId;
+    }
 
     public static function fromArray(array $payload): self
     {

@@ -7,12 +7,47 @@ namespace App\Entity;
 final class Point
 {
     public function __construct(
-        public readonly int $id,
-        public readonly int $walletId,
-        public readonly ?int $transactionId,
-        public readonly ?int $redemptionId,
-        public readonly int $pointAmount,
-        public readonly ?string $description,
-        public readonly string $createdAt,
+        private readonly int $id,
+        private readonly int $walletId,
+        private readonly ?int $transactionId,
+        private readonly ?int $redemptionId,
+        private readonly int $pointAmount,
+        private readonly ?string $description,
+        private readonly string $createdAt,
     ) {}
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getWalletId(): int
+    {
+        return $this->walletId;
+    }
+
+    public function getTransactionId(): ?int
+    {
+        return $this->transactionId;
+    }
+
+    public function getRedemptionId(): ?int
+    {
+        return $this->redemptionId;
+    }
+
+    public function getPointAmount(): int
+    {
+        return $this->pointAmount;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getCreatedAt(): string
+    {
+        return $this->createdAt;
+    }
 }

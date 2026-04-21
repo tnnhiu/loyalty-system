@@ -9,11 +9,31 @@ use InvalidArgumentException;
 final class CreateGiftRequestDto
 {
     public function __construct(
-        public readonly string $giftName,
-        public readonly int $pointCost,
-        public readonly int $stock,
-        public readonly string $status,
+        private readonly string $giftName,
+        private readonly int $pointCost,
+        private readonly int $stock,
+        private readonly string $status,
     ) {}
+
+    public function getGiftName(): string
+    {
+        return $this->giftName;
+    }
+
+    public function getPointCost(): int
+    {
+        return $this->pointCost;
+    }
+
+    public function getStock(): int
+    {
+        return $this->stock;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
 
     public static function fromArray(array $payload): self
     {

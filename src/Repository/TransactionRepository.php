@@ -14,7 +14,7 @@ use PDO;
 use RuntimeException;
 use Throwable;
 
-final class EarnPointsRepository
+final class TransactionRepository extends AbstractPdoRepository
 {
     public function earnPoints(EarnPointsRequestDto $request): EarnPointsResponseDto
     {
@@ -23,27 +23,27 @@ final class EarnPointsRepository
         try {
             $pdo->beginTransaction();
 
-            if (!$this->memberExists($pdo, $request->memberId)) {
+            if (!$this->memberExists($pdo, $request->getMemberId())) {
                 throw new DomainException('Member not found.');
             }
 
-            $wallet = $this->findOrCreateWallet($pdo, $request->memberId);
-            $earnedPoints = $this->calculatePoints($request->amount);
+            $wallet = $this->findOrCreateWallet($pdo, $request->getMemberId());
+            $earnedPoints = $this->calculatePoints($request->getAmount());
 
             $transaction = $this->insertTransaction($pdo, $request);
-            $this->insertPoint($pdo, $wallet, $transaction, $earnedPoints, $request->description);
+            $this->insertPoint($pdo, $wallet, $transaction, $earnedPoints, $request->getDescription());
             $wallet = $this->increaseWalletBalance($pdo, $wallet, $earnedPoints);
 
             $pdo->commit();
 
             return new EarnPointsResponseDto(
-                transactionId: $transaction->id,
-                memberId: $transaction->memberId,
-                amount: $transaction->amount,
+                transactionId: $transaction->getId(),
+                memberId: $transaction->getMemberId(),
+                amount: $transaction->getAmount(),
                 earnedPoints: $earnedPoints,
-                walletBalance: $wallet->balance,
-                status: $transaction->status,
-                createdAt: $transaction->createdAt,
+                walletBalance: $wallet->getBalance(),
+                status: $transaction->getStatus(),
+                createdAt: $transaction->getCreatedAt(),
             );
         } catch (Throwable $exception) {
             if ($pdo->inTransaction()) {
@@ -52,35 +52,6 @@ final class EarnPointsRepository
 
             throw $exception;
         }
-    }
-
-    private function createPdoFromEnv(): PDO
-    {
-        $required = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'];
-        $missing = [];
-
-        foreach ($required as $key) {
-            $value = $this->env($key);
-            if ($value === null || trim($value) === '') {
-                $missing[] = $key;
-            }
-        }
-
-        if ($missing !== []) {
-            throw new RuntimeException('Missing required environment variables: ' . implode(', ', $missing));
-        }
-
-        $dsn = sprintf(
-            'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
-            (string) $this->env('DB_HOST'),
-            (string) $this->env('DB_PORT'),
-            (string) $this->env('DB_NAME')
-        );
-
-        return new PDO($dsn, (string) $this->env('DB_USER'), (string) $this->env('DB_PASSWORD'), [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]);
     }
 
     private function memberExists(PDO $pdo, int $memberId): bool
@@ -133,8 +104,8 @@ final class EarnPointsRepository
             'INSERT INTO transactions (member_id, amount, status) VALUES (:memberId, :amount, :status)'
         );
         $statement->execute([
-            'memberId' => $request->memberId,
-            'amount' => $request->amount,
+            'memberId' => $request->getMemberId(),
+            'amount' => $request->getAmount(),
             'status' => 'SUCCESS',
         ]);
 
@@ -170,8 +141,8 @@ final class EarnPointsRepository
                 . 'VALUES (:walletId, :transactionId, :pointAmount, :description)'
         );
         $statement->execute([
-            'walletId' => $wallet->id,
-            'transactionId' => $transaction->id,
+            'walletId' => $wallet->getId(),
+            'transactionId' => $transaction->getId(),
             'pointAmount' => $earnedPoints,
             'description' => $description,
         ]);
@@ -204,10 +175,10 @@ final class EarnPointsRepository
         $statement = $pdo->prepare('UPDATE wallets SET balance = balance + :amount WHERE id = :id');
         $statement->execute([
             'amount' => $earnedPoints,
-            'id' => $wallet->id,
+            'id' => $wallet->getId(),
         ]);
 
-        $updatedWallet = $this->findWalletByMemberId($pdo, $wallet->memberId);
+        $updatedWallet = $this->findWalletByMemberId($pdo, $wallet->getMemberId());
         if ($updatedWallet === null) {
             throw new RuntimeException('Cannot read wallet after balance update.');
         }
@@ -219,7 +190,6 @@ final class EarnPointsRepository
     {
         $amountInCents = $this->amountToCents($amount);
 
-        // Points = Amount x 1%; amount is in currency units with 2 decimals.
         return intdiv($amountInCents, 10000);
     }
 
@@ -228,15 +198,5 @@ final class EarnPointsRepository
         [$whole, $decimal] = explode('.', $amount, 2);
 
         return ((int) $whole * 100) + (int) $decimal;
-    }
-
-    private function env(string $name): ?string
-    {
-        $value = $_ENV[$name] ?? $_SERVER[$name] ?? getenv($name);
-        if ($value === false || $value === null) {
-            return null;
-        }
-
-        return (string) $value;
     }
 }

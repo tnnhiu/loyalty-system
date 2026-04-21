@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\DTO\Request\CreateGiftRequestDto;
 use App\DTO\Request\RedeemGiftRequestDto;
 use App\Repository\GiftRepository;
-use App\Repository\RedeemGiftRepository;
 use DomainException;
 use InvalidArgumentException;
 use JsonException;
@@ -20,7 +19,6 @@ final class GiftController
 {
     public function __construct(
         private readonly GiftRepository $giftRepository,
-        private readonly RedeemGiftRepository $redeemGiftRepository,
     ) {}
 
     #[Route('/api/gifts', name: 'api_create_gift', methods: ['POST'])]
@@ -75,7 +73,7 @@ final class GiftController
             }
 
             $dto = RedeemGiftRequestDto::fromArray($payload);
-            $result = $this->redeemGiftRepository->redeem($dto);
+            $result = $this->giftRepository->redeem($dto);
 
             return new JsonResponse([
                 'ok' => true,

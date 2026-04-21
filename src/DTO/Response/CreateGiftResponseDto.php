@@ -7,12 +7,37 @@ namespace App\DTO\Response;
 final class CreateGiftResponseDto
 {
     public function __construct(
-        public readonly int $id,
-        public readonly string $giftName,
-        public readonly int $pointCost,
-        public readonly int $stock,
-        public readonly string $status,
+        private readonly int $id,
+        private readonly string $giftName,
+        private readonly int $pointCost,
+        private readonly int $stock,
+        private readonly string $status,
     ) {}
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getGiftName(): string
+    {
+        return $this->giftName;
+    }
+
+    public function getPointCost(): int
+    {
+        return $this->pointCost;
+    }
+
+    public function getStock(): int
+    {
+        return $this->stock;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
 
     public function toArray(): array
     {

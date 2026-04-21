@@ -9,9 +9,19 @@ use InvalidArgumentException;
 final class RedeemGiftRequestDto
 {
     public function __construct(
-        public readonly int $memberId,
-        public readonly int $giftId,
+        private readonly int $memberId,
+        private readonly int $giftId,
     ) {}
+
+    public function getMemberId(): int
+    {
+        return $this->memberId;
+    }
+
+    public function getGiftId(): int
+    {
+        return $this->giftId;
+    }
 
     public static function fromArray(array $payload): self
     {

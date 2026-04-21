@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\DTO\Request\CreateMemberRequestDto;
 use App\DTO\Request\GetMemberPointHistoryRequestDto;
-use App\Repository\MemberPointHistoryRepository;
 use App\Repository\MemberRepository;
 use DomainException;
 use InvalidArgumentException;
@@ -20,7 +19,6 @@ final class MemberController
 {
     public function __construct(
         private readonly MemberRepository $memberRepository,
-        private readonly MemberPointHistoryRepository $memberPointHistoryRepository,
     ) {}
 
     #[Route('/api/members', name: 'api_create_member', methods: ['POST'])]
@@ -75,7 +73,7 @@ final class MemberController
                 'member_id' => $member_id,
             ]);
 
-            $result = $this->memberPointHistoryRepository->getHistory($dto);
+            $result = $this->memberRepository->getHistory($dto);
 
             return new JsonResponse([
                 'ok' => true,

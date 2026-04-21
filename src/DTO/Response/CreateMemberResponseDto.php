@@ -7,13 +7,43 @@ namespace App\DTO\Response;
 final class CreateMemberResponseDto
 {
     public function __construct(
-        public readonly int $memberId,
-        public readonly string $fullName,
-        public readonly string $email,
-        public readonly string $createdAt,
-        public readonly int $walletId,
-        public readonly string $walletBalance,
+        private readonly int $memberId,
+        private readonly string $fullName,
+        private readonly string $email,
+        private readonly string $createdAt,
+        private readonly int $walletId,
+        private readonly string $walletBalance,
     ) {}
+
+    public function getMemberId(): int
+    {
+        return $this->memberId;
+    }
+
+    public function getFullName(): string
+    {
+        return $this->fullName;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getCreatedAt(): string
+    {
+        return $this->createdAt;
+    }
+
+    public function getWalletId(): int
+    {
+        return $this->walletId;
+    }
+
+    public function getWalletBalance(): string
+    {
+        return $this->walletBalance;
+    }
 
     public function toArray(): array
     {

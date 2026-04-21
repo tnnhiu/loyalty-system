@@ -8,12 +8,38 @@ final class GetMemberPointHistoryResponseDto
 {
     /** @param PointHistoryItemDto[] $items */
     public function __construct(
-        public readonly int $memberId,
-        public readonly int $walletId,
-        public readonly string $walletBalance,
-        public readonly int $totalItems,
-        public readonly array $items,
+        private readonly int $memberId,
+        private readonly int $walletId,
+        private readonly string $walletBalance,
+        private readonly int $totalItems,
+        private readonly array $items,
     ) {}
+
+    public function getMemberId(): int
+    {
+        return $this->memberId;
+    }
+
+    public function getWalletId(): int
+    {
+        return $this->walletId;
+    }
+
+    public function getWalletBalance(): string
+    {
+        return $this->walletBalance;
+    }
+
+    public function getTotalItems(): int
+    {
+        return $this->totalItems;
+    }
+
+    /** @return PointHistoryItemDto[] */
+    public function getItems(): array
+    {
+        return $this->items;
+    }
 
     public function toArray(): array
     {

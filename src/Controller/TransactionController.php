@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\DTO\Request\EarnPointsRequestDto;
-use App\Repository\EarnPointsRepository;
+use App\Repository\TransactionRepository;
 use DomainException;
 use InvalidArgumentException;
 use JsonException;
@@ -16,7 +16,7 @@ use Throwable;
 
 final class TransactionController
 {
-    public function __construct(private readonly EarnPointsRepository $earnPointsRepository) {}
+    public function __construct(private readonly TransactionRepository $transactionRepository) {}
 
     #[Route('/api/transactions/earn-points', name: 'api_earn_points', methods: ['POST'])]
     public function earnPoints(Request $request): JsonResponse
@@ -31,7 +31,7 @@ final class TransactionController
             }
 
             $dto = EarnPointsRequestDto::fromArray($payload);
-            $result = $this->earnPointsRepository->earnPoints($dto);
+            $result = $this->transactionRepository->earnPoints($dto);
 
             return new JsonResponse([
                 'ok' => true,

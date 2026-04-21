@@ -9,10 +9,25 @@ use InvalidArgumentException;
 final class EarnPointsRequestDto
 {
     public function __construct(
-        public readonly int $memberId,
-        public readonly string $amount,
-        public readonly ?string $description,
+        private readonly int $memberId,
+        private readonly string $amount,
+        private readonly ?string $description,
     ) {}
+
+    public function getMemberId(): int
+    {
+        return $this->memberId;
+    }
+
+    public function getAmount(): string
+    {
+        return $this->amount;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
     public static function fromArray(array $payload): self
     {
